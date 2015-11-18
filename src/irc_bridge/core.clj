@@ -32,14 +32,13 @@
     (irc/connect server port nickname
                  :callbacks {:privmsg
                              (fn [irc {:keys [nick text]}]
-                               (message->gitter gitter (str "`ircbot` <" nick ">: " text)))}
-                 )))
+                               (message->gitter gitter (str "`ircbot` <" nick ">: " text)))})))
 
 (defn create-irc-bot [config]
   (let [conn (connect-irc config)
         channel (:channel (:irc config))]
-    (info (str "Join to channel: " channel))
-    (irc/join conn channel)))
+    (irc/join conn channel)
+    (info (str "Join to channel: " channel))))
 
 (defn -main [& args]
   (let [arg1 (nth args 0)]
