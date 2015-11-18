@@ -31,6 +31,7 @@
     (info (str "Connect to " server ":" port ", nickname: " nickname))
     (irc/connect server port nickname
                  :auto-reconnect-delay-mins 1 ; reconnect delay after disconnect
+                 :timeout-mins 20 ; socket timeout - length of time to keep socket open when nothing happens
                  :callbacks {:privmsg
                              (fn [irc {:keys [nick text]}]
                                (message->gitter gitter (str "`ircbot` <" nick ">: " text)))})))
