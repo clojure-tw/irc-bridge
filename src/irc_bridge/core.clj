@@ -1,8 +1,10 @@
 (ns irc-bridge.core
   (:require [clojure.edn :as edn]
             [taoensso.timbre :as timbre :refer (debug info warn error fatal)]
+            [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]
             [clj-http.client :as client]
             [clojure.data.json :as json]
+            [irclj.events :as events]
             [irclj.core :as irc])
   (:gen-class))
 
@@ -23,50 +25,56 @@
                 :body (json/write-str {:text message })})
   (info (str "send-gitter-message!: " message)))
 
-;; TODO: quit connect safely
-;; http://www.dslreports.com/faq/4798
-;; https://github.com/ormiret/spacebot/blob/master/src/spacebot/core.clj
-;; https://github.com/oskarth/breakfast/blob/9d703b1da9de7bf89fc6f1f4aebce0ac7813122c/src/clj/breakfast/server.clj
+(def irc-chan    (chan))
+(def gitter-chan (chan))
+(def slack-chan  (chan))
+
+(defn events-listener
+  [{:keys [gitter irc] :as config}]
+  (info "Start events-listener")
+  ;; irc -> gitter, slack
+  (go-loop []
+    (let [msg (<! irc-chan)]
+      (send-gitter-message! gitter msg)
+      (recur)))
+  ;; gitter -> irc, slack
+  ;; slack -> irc, gitter
+
+  config)
+
 (defn connect-irc
   [{:keys [gitter irc]}]
-  (let [server   (:server irc)
-        port     (:port irc)
-        nickname (:nickname irc)
-        ssl?     (:ssl? irc)]
+  (let [{:keys [server port nickname ssl?]} irc]
     (info (str "Connect to " server ":" port ", nickname: " nickname))
     (irc/connect server port nickname
                  :ssl? ssl?
                  :callbacks {:privmsg
-                             (fn [irc {:keys [nick text]}]
+                             (fn [irc {:keys [nick text] :as m}]
                                (try
-                                 (send-gitter-message! gitter (str "`ircbot` <" nick ">: " text))
+                                 (put! irc-chan (str "`ircbot` <" nick ">: " text))
                                  ;;(catch java.net.SocketException e
                                  (catch Throwable e
                                    (info "SocketException, trying to reconnect in xxx ms")
                                    ))
                                )
-                             }
-                 )))
+                             :raw-log events/stdout-callback})))
 
-(defn create-irc-bot [config]
+(defn create-bot
+  [{:keys [gitter irc] :as config}]
   (let [conn (connect-irc config)
-        channel (:channel (:irc config))]
-    ;; enable keepalive on the socket, otherwise if it times out we never notice and the bot just hangs
-    ;; (-> @conn :connection :socket (.setKeepAlive true))
+        {:keys [channel server]} irc]
+    ;; join to channel
     (irc/join conn channel)
-    (info (str "Join to channel: " channel))
     ;; tick the irc server to prevent get "Connection reset by peer" error.
     (while true
-      (do
-        (info "tick")
-        (irc/message conn (:server (:irc config)) "Hi")
-        (Thread/sleep 50000)
-        ))
-    ))
+      (info "tick")
+      (irc/message conn server "Hi")
+      (Thread/sleep 50000))))
 
 (defn -main [& args]
   (let [arg1 (nth args 0)]
     (if arg1
       (-> (parse-config arg1)
-          (create-irc-bot))
+          (events-listener)
+          (create-bot))
       (fatal "Please specify config file."))))
