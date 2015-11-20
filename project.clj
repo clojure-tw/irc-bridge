@@ -4,8 +4,11 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/core.async "0.2.374"]
                  [clj-http "2.0.0"]
                  [com.taoensso/timbre "4.1.4"]
                  [org.clojure/data.json "0.2.6"]
-                 [irclj "0.5.0-alpha4"]]
-  :main irc-bridge.core)
+                 [irclj "0.5.0-alpha4"]
+                 [clj-irc "0.0.1"]]
+  :main irc-bridge.core
+  :aot [irc-bridge.core])
