@@ -3,7 +3,8 @@
             [taoensso.timbre :as timbre :refer (debug info warn error fatal)]
             [clj-http.client :as client]
             [clojure.data.json :as json]
-            [irclj.core :as irc]))
+            [irclj.core :as irc])
+  (:gen-class))
 
 (defn parse-config
   "Parse irc-bot config."
@@ -11,7 +12,7 @@
   (edn/read-string (slurp url)))
 
 ;; TODO: error handling
-(defn message->gitter
+(defn send-gitter-message!
   "Send message to gitter."
   [{:keys [rom-id api-key]} message]
   (client/post (str "https://api.gitter.im/v1/rooms/" rom-id "/chatMessages")
@@ -20,7 +21,7 @@
                 :headers {"Authorization" (str "Bearer " api-key)}
                 :conn-timeout (* 10 1000)
                 :body (json/write-str {:text message })})
-  (info (str "message->gitter: " message)))
+  (info (str "send-gitter-message!: " message)))
 
 ;; TODO: quit connect safely
 ;; http://www.dslreports.com/faq/4798
@@ -38,7 +39,7 @@
                  :callbacks {:privmsg
                              (fn [irc {:keys [nick text]}]
                                (try
-                                 (message->gitter gitter (str "`ircbot` <" nick ">: " text))
+                                 (send-gitter-message! gitter (str "`ircbot` <" nick ">: " text))
                                  ;;(catch java.net.SocketException e
                                  (catch Throwable e
                                    (info "SocketException, trying to reconnect in xxx ms")
