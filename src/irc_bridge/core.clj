@@ -17,8 +17,8 @@
   "irc -> gitter, slack"
   [{:keys [gitter irc] :as config}]
   (go-loop [{:keys [nickname message]} (<! irc/channel)]
-      (when-not (re-find #"gitterbot" nickname)
-        (gitter/send-message! gitter (str "`ircbot` <" nickname ">: " message)))
+    (when-not (re-find #"gitterbot" nickname)
+      (gitter/send-message! gitter (str "`ircbot` <" nickname ">: " message)))
     (recur (<! irc/channel))))
 
 ;; TODO:
