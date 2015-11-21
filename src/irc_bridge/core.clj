@@ -4,8 +4,7 @@
             [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]
             ;; clean
             [irc-bridge.gitter :as gitter]
-            [irc-bridge.irc    :as irc]
-            )
+            [irc-bridge.irc    :as irc])
   (:gen-class))
 
 (defn parse-config
@@ -16,9 +15,13 @@
 (defn irc-events-dispatcher
   "irc -> gitter, slack"
   [{:keys [gitter irc] :as config}]
-  (go-loop [{:keys [nickname message]} (<! irc/channel)]
+  (go-loop [{:keys [nickname message type]} (<! irc/channel)]
     (when-not (re-find #"gitterbot" nickname)
-      (gitter/send-message! gitter (str "`ircbot` <" nickname ">: " message)))
+      ;; TODO: clean code
+      (if (= type :action)
+        (gitter/send-message! gitter (str "`ircbot` * " nickname " " message))
+        (gitter/send-message! gitter (str "`ircbot` <" nickname ">: " message))
+        ))
     (recur (<! irc/channel))))
 
 ;; TODO:

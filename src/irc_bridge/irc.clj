@@ -4,6 +4,7 @@
   (:require [irclj.core :as irc]
             [irclj.events :as events]
             [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]
+            [clojure.string]
             )
   )
 
@@ -17,25 +18,26 @@
   [{:keys [channel] :as irc} message]
   (irclj.core/message @conn channel message))
 
-(defn- callback-privmsg
+(defn- handle-privmsg
   [irc {:keys [nick text] :as m}]
-  (try
-    (put! channel {:nickname nick :message text})
-    ;;(catch java.net.SocketException e
-    (catch Throwable e
-      (println "SocketException, trying to reconnect in xxx ms")
-      )))
+  (put! channel {:nickname nick :message text :type :default}))
 
-(defn- callback-row-log
+(defn- handle-row-log
   [irc type s]
   (irclj.events/stdout-callback irc type s))
+
+(defn- handle-ctcp-action
+  [irc {:keys [nick text] :as m}]
+  (let [message (clojure.string/replace-first text #"ACTION" "")]
+    (put! channel {:nickname nick :message message :type :action})))
 
 (defn connect
   [{:keys [server port nickname channel ssl?] :as irc}]
   (irc/connect server port nickname
                :ssl? ssl?
-               :callbacks {:privmsg callback-privmsg
-                           :raw-log callback-row-log}))
+               :callbacks {:privmsg handle-privmsg
+                           :raw-log handle-row-log
+                           :ctcp-action handle-ctcp-action}))
 
 (defn event-listener
   [{:keys [server port nickname channel ssl?] :as irc}]
