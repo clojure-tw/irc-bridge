@@ -17,10 +17,13 @@
   "irc -> gitter, slack"
   [{:keys [gitter irc] :as config}]
   (go-loop [{:keys [nickname message]} (<! irc/channel)]
-      (when-not (re-find #"gitterbot" message)
+      (when-not (re-find #"gitterbot" nickname)
         (gitter/send-message! gitter (str "`ircbot` <" nickname ">: " message)))
     (recur (<! irc/channel))))
 
+;; TODO:
+;; 1. multiline -> send to irc many times
+;; 2. code block -> send to pastebin like system
 (defn gitter-events-dispatcher
   "gitter -> irc, slack"
   [{:keys [gitter irc] :as config}]
