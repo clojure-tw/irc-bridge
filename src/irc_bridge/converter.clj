@@ -5,17 +5,10 @@
 
 (defn irc->gitter
   [{:keys [nickname message type] :as ch}]
-  (cond type
-        :action (str "`ircbot` * " nickname " " message)
-        ;; default
-        (str "`ircbot` <" nickname ">: " message)))
-
-(defn irc->slack
-  [{:keys [nickname message type] :as ch}]
-  (cond type
-        :action (str "`ircbot` * " nickname " " message)
-        ;; default
-        (str "`ircbot` <" nickname ">: " message)))
+  (case type
+    :action (str "`ircbot` * " nickname " " message)
+    ;; default
+    (str "`ircbot` <" nickname ">: " message)))
 
 (defn gitter->irc
   [{:keys [nickname message type] :as ch}]
