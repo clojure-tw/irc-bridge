@@ -19,8 +19,8 @@
     (when-not (re-find #"gitterbot" nickname)
       ;; TODO: clean code
       (if (= type :action)
-        (gitter/send-message! gitter (str "`ircbot` * " nickname " " message))
-        (gitter/send-message! gitter (str "`ircbot` <" nickname ">: " message))
+        (gitter/send-message! (str "`ircbot` * " nickname " " message))
+        (gitter/send-message! (str "`ircbot` <" nickname ">: " message))
         ))
     (recur (<! irc/channel))))
 
@@ -32,14 +32,14 @@
   [{:keys [gitter irc] :as config}]
   (go-loop [{:keys [nickname message]} (<! gitter/channel)]
     (when-not (re-find #"ircbot" message)
-      (irc/send-message! irc (str "<" nickname ">: " message)))
+      (irc/send-message! :gitter (str "<" nickname ">: " message)))
     (recur (<! gitter/channel))))
 
 (defn start-irc-bridge
   [{:keys [gitter irc] :as config}]
   ;; start listener in thread
-  (future (gitter/event-listener gitter))
-  (future (irc/event-listener irc))
+  (gitter/event-listener gitter)
+  (irc/event-listener irc)
   ;; start dispatcher for handling events
   (irc-events-dispatcher    config)
   (gitter-events-dispatcher config))

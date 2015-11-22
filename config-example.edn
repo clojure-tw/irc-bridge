@@ -5,5 +5,4 @@
           :api-key "xxx0axxe2xxbxxf2ba2xxx7ffxxxa278xxx8f47"}
  :irc    {:server "irc.freenode.net"
           :port 6667
-          :nickname "bot12313213"
           :channel "#test-bot"}}
