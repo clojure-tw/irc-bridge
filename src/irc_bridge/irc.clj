@@ -89,4 +89,6 @@
   (reset! state config)
   ;; start the irc event listener
   (start-irc-event! config :gitterbot)
-  (start-irc-event! config :slackbot))
+  ;; TODO: finish slack event
+  ;; (start-irc-event! config :slackbot)
+  )
