@@ -1,6 +1,6 @@
 (ns irc-bridge.irc
   {:author "Yen-Chin, Lee"
-   :doc ""}
+   :doc "Listen irc server and send message to channel."}
   (:require [irclj.core :as irc]
             [irclj.events :as events]
             [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]

@@ -1,6 +1,6 @@
 (ns irc-bridge.converter
   {:author "Yen-Chin, Lee"
-   :doc ""}
+   :doc "Convert irc/gitter message."}
   (:require [clojure.string :as str]))
 
 (defn irc->gitter

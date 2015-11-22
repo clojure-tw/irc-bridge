@@ -1,14 +1,12 @@
 (ns irc-bridge.gitter
   {:author "Yen-Chin, Lee"
-   :doc ""}
+   :doc "Listen gitter server and send message to channel."}
   (:require [clj-http.client :as client]
             [http.async.client :as http]
             [clojure.data.json :as json]
-            [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]
-            ))
+            [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]))
 
 (defonce channel (chan))
-
 (defonce state (atom nil))
 
 (defn send-message!
