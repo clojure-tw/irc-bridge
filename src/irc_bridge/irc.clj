@@ -34,9 +34,10 @@
   (when (= type :gitterbot)
     (put! channel {:nickname nick :message text :type :default})))
 
-(defn- handle-row-log
+(defn- handle-raw-log
   [irc type s]
-  (irclj.events/stdout-callback irc type s))
+  (when (:debug @state)
+    (irclj.events/stdout-callback irc type s)))
 
 (defn- handle-ctcp-action
   [type irc {:keys [nick text] :as m}]
@@ -73,8 +74,7 @@
                :callbacks {:privmsg      (partial handle-privmsg type)
                            :ctcp-action  (partial handle-ctcp-action type)
                            :on-exception (partial handle-exception type)
-                           ;; :raw-log handle-row-log ; keep for debug
-                           }))
+                           :raw-log handle-raw-log}))
 
 (defn- start-irc-event!
   [config type]
