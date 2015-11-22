@@ -5,9 +5,7 @@
             [irclj.events :as events]
             [clojure.core.async :refer [chan go go-loop >! <! timeout alt! put! <!!] :as async]
             [clojure.string]
-            [taoensso.timbre :as log :refer (debug info warn error fatal)]
-            )
-  )
+            [taoensso.timbre :as log :refer (debug info warn error fatal)]))
 
 (defonce channel (chan))
 (defonce state (atom nil))
@@ -50,7 +48,7 @@
 (declare start-irc-event!)
 (defn- handle-exception
   "When we here, maybe we use the samce nickname, retry with another."
-  [connect! type irc e]
+  [type irc e]
   (log/error (.getMessage e))
   ;; kill old irc instance
   (irclj.core/kill irc)
