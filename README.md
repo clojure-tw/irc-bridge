@@ -18,7 +18,7 @@ You need to modify the config then run
 
 The configuration is in edn format, you can see `config-example.edn` which has
 following config:
-
+```clojure
     {:gitter {:rom-id "xaxc876119x6c7xx89xxb3xxe"
               :api-key "xxx0axxe2xxbxxf2ba2xxx7ffxxxa278xxx8f47"}
      :irc    {:server "irc.freenode.net"
@@ -26,7 +26,7 @@ following config:
               :channel "#test-bot"
               :debug true ; enable this to see raw-stdout
              }}
-
+```
 ## License
 
 Copyright © 2015 Yen-Chin, Lee <<coldnew.tw@gmail.com>>
