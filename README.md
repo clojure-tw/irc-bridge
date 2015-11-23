@@ -8,7 +8,7 @@ Clojure Taiwan Community.
 Since I didn't have the token for `clojuretwbot`, the slack integration is put
 on hold.
 
-這是一個非常簡單的 IRC 機器人，用來同不 `clojure-tw` 群組的 `gitter` 訊息以及 `IRC` 訊息，最初設計時有考量加上 slack 支援，
+這是一個非常簡單的 IRC 機器人，用來同步 `clojure-tw` 群組的 `gitter` 訊息以及 `IRC` 訊息，最初設計時有考量加上 slack 支援，
 但是由於該功能被 clojurians 的管理者關掉，因此這個機器人無法和 slack 上的 `clojure-taiwan` 頻道進行同步。
 
 ## Configuration
