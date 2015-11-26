@@ -10,6 +10,8 @@ on hold.
 
 這是一個非常簡單的 IRC 機器人，用來同步 `clojure-tw` 群組的 `gitter` 訊息以及在 freenode.net #clojure.tw 的 `IRC` 訊息，最初設計時有考量加上 slack 支援，但是由於該功能被 clojurians 的管理者關掉，因此這個機器人無法和 slack 上的 `clojure-taiwan` 頻道進行同步。
 
+在我的文章有大致上描述這隻機器人的構成: [使用 clojure 寫 irc 與 gitter 機器人](http://coldnew.github.io/blog/2015/11-23_clojure_irc_gitter_bot/)
+
 ## Configuration
 
 The configuration is in edn format, you can see `config-example.edn` which has
