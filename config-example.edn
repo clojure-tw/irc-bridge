@@ -6,5 +6,7 @@
  :irc    {:server "irc.freenode.net"
           :port 6667
           :channel "#test-bot"
-          :debug true ; enable this to see raw-stdout
-          }}
+          ;; enable this to see raw-stdout
+          :debug true }
+ :telegram {:token "YOUR-TELEGRAM-TOKEN"
+            :chat-id "YOUR-CHATROOM-ID"}}
