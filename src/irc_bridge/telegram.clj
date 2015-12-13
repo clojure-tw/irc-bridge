@@ -26,8 +26,6 @@
                  (json/read-str :key-fn keyword))
          result (-> req :result)]
 
-     (println (str "---> " req))
-
      ;; when event come, send it to channel
      (if-not (nil? result)
        (put! channel result))
