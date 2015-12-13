@@ -9,11 +9,7 @@
                  [com.taoensso/timbre "4.1.4"]
                  [org.clojure/data.json "0.2.6"]
                  [irclj "0.5.0-alpha4"]
-                 [clj-irc "0.0.1"]
-;;                 [http-kit "2.1.18"]
-                 [http.async.client "0.5.2"]
-;;                 [cheshire "5.5.0"]
-;;                 [crouton "0.1.2"]
-                 ]
+                 [cheshire "5.5.0"]
+                 [http.async.client "0.5.2"]]
   :main irc-bridge.core
   :aot [irc-bridge.core])

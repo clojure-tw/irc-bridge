@@ -14,24 +14,26 @@
   "Generate nickname from type."
   [type]
   (case type
-    :gitterbot (str "gitterbot" (rand-int 100))
-    :slackbot  (str "slackbot"  (rand-int 100))
-    (throw (Exception. "We only support gitterbot and slackbot type"))))
+    :gitterbot    (str "gitterbot" (rand-int 100))
+    :slackbot     (str "slackbot"  (rand-int 100))
+    :telegrambot  (str "telebot"   (rand-int 100))
+    (throw (Exception. "We only support gitterbot, slackbot and telegrambot type"))))
 
 (defn send-message!
   "Send message to irc."
   ([from message] (send-message! @state from message))
   ([state from message]
-   (let [{:keys [channel gitterbot slackbot]} state]
+   (let [{:keys [channel gitterbot slackbot telegrambot]} state]
      (case from
-       :gitter (irclj.core/message (:conn gitterbot) channel message)
-       :slack  (irclj.core/message (:conn slackbot)  channel message)
-       (throw (Exception. "We only support gitterbot and slackbot type"))))))
+       :gitter    (irclj.core/message (:conn gitterbot) channel message)
+       :slack     (irclj.core/message (:conn slackbot)  channel message)
+       :telegram  (irclj.core/message (:conn telegrambot)  channel message)
+       (throw (Exception. "We only support gitterbot, slackbot and telegrambot type"))))))
 
 (defn- handle-privmsg
   [type irc {:keys [nick text] :as m}]
-  ;; Since we host two bot in irc, only listen gitterbot's irc event
-  (when (= type :gitterbot)
+  ;; Since we have three bot in irc, only listen telegram's irc event
+  (when (= type :telegrambot)
     (put! channel {:nickname nick :message text :type :default})))
 
 (defn- handle-raw-log
@@ -42,8 +44,8 @@
 (defn- handle-ctcp-action
   [type irc {:keys [nick text] :as m}]
   (let [message (clojure.string/replace-first text #"ACTION" "")]
-    ;; Since we host two bot in irc, only listen gitterbot's irc event
-    (when (= type :gitterbot)
+    ;; Since we have three bot in irc, only listen telegram's irc event
+    (when (= type :telegrambot)
       (put! channel {:nickname nick :message message :type :action}))))
 
 (declare start-irc-event!)
@@ -88,7 +90,8 @@
   ;; store default state in atom
   (reset! state config)
   ;; start the irc event listener
-  (start-irc-event! config :gitterbot)
+  ;; (start-irc-event! config :gitterbot)
   ;; TODO: finish slack event
   ;; (start-irc-event! config :slackbot)
+  (start-irc-event! config :telegrambot)
   )

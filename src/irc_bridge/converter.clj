@@ -15,3 +15,16 @@
   (map #(str %1 %2)
        (repeat (str "<" nickname ">: "))
        (clojure.string/split-lines message)))
+
+(defn telegram->irc
+  [{:keys [nickname message type] :as ch}]
+  (map #(str %1 %2)
+       (repeat (str "<" nickname ">: "))
+       (clojure.string/split-lines message)))
+
+(defn irc->telegram
+  [{:keys [nickname message type] :as ch}]
+  (case type
+    :action (str "* " nickname " " message)
+    ;; default
+    (str "<" nickname ">: " message)))
