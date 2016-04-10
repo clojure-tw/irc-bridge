@@ -2,6 +2,18 @@
 [![Build Status](https://travis-ci.org/clojure-tw/irc-bridge.svg?branch=master)](https://travis-ci.org/clojure-tw/irc-bridge)
 [![License](http://img.shields.io/badge/license-Eclipse-blue.svg?style=flat)](https://www.eclipse.org/legal/epl-v10.html)
 
+> **DEPRECATED**
+>
+> Since we (clojuew-tw) use telegram instead of gitter now, this project is no longer maintained.
+>
+
+> **停止維護**
+>
+> 因為我們 (clojure-tw) 目前已經改用 telegram 取代 gitter 作為閒談用的平台, 因此本專案將停止維護。
+>
+> telegram 頻道的連結你可以在 [clojure.tw](http://clojure.tw) 網頁上看到。
+>
+
 A simple irc bot to bridge message from gitter/irc, this bot is designed for
 Clojure Taiwan Community.
 
